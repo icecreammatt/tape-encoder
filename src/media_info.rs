@@ -4,28 +4,16 @@ use std::fs;
 use std::process::Command;
 
 pub fn get_media_info(input: &str) -> OutputMetadata {
-    let re = Regex::new(r"(\d{4}(?:-|\.)\d{2}(?:-|\.)\d{2})?(?:-|\.)*(.+).(mp4)").unwrap();
-
-    let captures = re.captures(input).expect("expect YYYY-MM-DD-File-Name.mp4");
-
-    println!("captures len {}", captures.len());
-    for cap in 0..captures.len() {
-        println!(
-            "{}: {}",
-            cap,
-            format!("{}", captures.get(cap).unwrap().as_str())
-        );
     if !fs::metadata(&input).is_ok() {
         println!("{} is not found.", &input);
         std::process::exit(1);
     }
 
-    // TODO: Make the date optional
-    // let mut date = "";
-    // if captures.len() < 4 {
-    // }
+    let re = Regex::new(r"(\d{4}(?:-|\.)\d{2}(?:-|\.)\d{2})?(?:-|\.)*(.+).(mp4|mov)").unwrap();
 
-    let date = captures.get(1).unwrap().as_str();
+    let captures = re.captures(input).expect("expect YYYY-MM-DD-File-Name.mp4");
+
+    let date = captures.get(1).map_or("No Date", |x| x.as_str());
     let extracted_filename = captures.get(2).unwrap().as_str();
     let extension = captures.get(3).unwrap().as_str();
 
