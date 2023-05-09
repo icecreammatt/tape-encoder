@@ -1,5 +1,6 @@
 use crate::metadata::*;
 use regex::Regex;
+use std::fs;
 use std::process::Command;
 
 pub fn get_media_info(input: &str) -> OutputMetadata {
@@ -14,6 +15,9 @@ pub fn get_media_info(input: &str) -> OutputMetadata {
             cap,
             format!("{}", captures.get(cap).unwrap().as_str())
         );
+    if !fs::metadata(&input).is_ok() {
+        println!("{} is not found.", &input);
+        std::process::exit(1);
     }
 
     // TODO: Make the date optional
