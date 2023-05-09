@@ -3,16 +3,18 @@ use regex::Regex;
 use std::process::Command;
 
 pub fn get_media_info(input: &str) -> OutputMetadata {
-    // TODO: Fix this so it works with . and - for date
-    let re = Regex::new(r"(\d{4}-\d{2}-\d{2})?-(.*).(mp4)").unwrap();
+    let re = Regex::new(r"(\d{4}(?:-|\.)\d{2}(?:-|\.)\d{2})?(?:-|\.)*(.+).(mp4)").unwrap();
 
     let captures = re.captures(input).expect("expect YYYY-MM-DD-File-Name.mp4");
 
-    // println!("captures len {}", captures.len());
-    // for cap in 0..captures.len() {
-    // println!("cap: {}", cap);
-    // println!("{}", format!("{}", captures.get(cap).unwrap().as_str()));
-    // }
+    println!("captures len {}", captures.len());
+    for cap in 0..captures.len() {
+        println!(
+            "{}: {}",
+            cap,
+            format!("{}", captures.get(cap).unwrap().as_str())
+        );
+    }
 
     // TODO: Make the date optional
     // let mut date = "";
