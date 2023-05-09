@@ -3,25 +3,31 @@ use regex::Regex;
 use std::fs;
 use std::process::Command;
 
+fn get_file_parts(file: &str) -> (&str, &str, &str) {
+    let re = Regex::new(r"(\d{4}(?:-|\.)\d{2}(?:-|\.)\d{2})?(?:-|\.)*(.+).(mp4|mov)")
+        .expect("File format: YYYY-MM-DD-File.mp4");
+    let captures = re.captures(file).expect("expect YYYY-MM-DD-File-Name.mp4");
+
+    let date = captures.get(1).map_or("No Date", |x| x.as_str());
+    let extracted_filename = captures.get(2).unwrap().as_str();
+    let extension = captures.get(3).unwrap().as_str();
+
+    (date, extracted_filename, extension)
+}
+
 pub fn get_media_info(input: &str) -> OutputMetadata {
     if !fs::metadata(&input).is_ok() {
         println!("{} is not found.", &input);
         std::process::exit(1);
     }
 
-    let re = Regex::new(r"(\d{4}(?:-|\.)\d{2}(?:-|\.)\d{2})?(?:-|\.)*(.+).(mp4|mov)").unwrap();
-
-    let captures = re.captures(input).expect("expect YYYY-MM-DD-File-Name.mp4");
-
-    let date = captures.get(1).map_or("No Date", |x| x.as_str());
-    let extracted_filename = captures.get(2).unwrap().as_str();
-    let extension = captures.get(3).unwrap().as_str();
+    let (date, extracted_filename, extension) = get_file_parts(input);
 
     let media_info = Command::new("mediainfo")
         .arg("--output=JSON")
         .arg(format!("{}", input))
         .output()
-        .expect("mediainfo error parsing file");
+        .expect("mediainfo error parsing file, make sure mediainfo is installed");
 
     // if output.status == std::process::Output::Err(output.status) {
     //     panic!("Error reading file info");
@@ -70,4 +76,31 @@ pub fn get_media_info(input: &str) -> OutputMetadata {
     }
 
     return metadata;
+}
+
+#[test]
+fn file_name_with_date() {
+    let input = "2022-02-02-filename.mp4";
+    let (date, extracted_filename, extension) = get_file_parts(input);
+
+    assert_eq!(date, "2022-02-02");
+    assert_eq!(extracted_filename, "filename");
+    assert_eq!(extension, "mp4");
+}
+
+#[test]
+fn file_name_without_date() {
+    let input = "filename.mp4";
+    let (date, extracted_filename, extension) = get_file_parts(input);
+
+    assert_eq!(date, "No Date");
+    assert_eq!(extracted_filename, "filename");
+    assert_eq!(extension, "mp4");
+}
+
+#[test]
+#[should_panic]
+fn wrong_extension() {
+    let input = "filename.ext";
+    let (_date, _extracted_filename, _extension) = get_file_parts(input);
 }
