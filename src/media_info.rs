@@ -104,3 +104,10 @@ fn wrong_extension() {
     let input = "filename.ext";
     let (_date, _extracted_filename, _extension) = get_file_parts(input);
 }
+
+#[test]
+#[should_panic]
+fn no_extension() {
+    let input = "filename";
+    let (_date, _extracted_filename, _extension) = get_file_parts(input);
+}
