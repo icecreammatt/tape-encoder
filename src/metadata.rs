@@ -82,3 +82,30 @@ pub struct MediaInfo {
     pub creating_library: CreatingLibrary,
     pub media: Media,
 }
+
+#[test]
+fn test_duration_conversion_pad_with_zero_one_hour() {
+    let input = DurationSeconds {
+        duration_seconds: 7200.0,
+    };
+
+    assert_eq!(input.duration_human(), "02:00:00");
+}
+
+#[test]
+fn sample_from_test_file() {
+    let input = DurationSeconds {
+        duration_seconds: 149.316,
+    };
+
+    assert_eq!(input.duration_human(), "02:29");
+}
+
+#[test]
+fn test_duration_conversion_pad_with_zero_no_hour() {
+    let input = DurationSeconds {
+        duration_seconds: 360.0,
+    };
+
+    assert_eq!(input.duration_human(), "06:00");
+}
