@@ -25,3 +25,19 @@ fn file_to_hyphen_test() {
     let result = file_to_hyphen("2022.04.06.name with space.mp4");
     assert_eq!(result, "2022-04-06-name-with-space-mp4");
 }
+
+#[test]
+fn write_metadata_test() {
+    let output_metadata = OutputMetadata {
+        title: "temp".to_string(),
+        ..Default::default()
+    };
+
+    let _result = write_metadata(&output_metadata);
+
+    let file = File::open("temp/temp.json").expect("error opening file");
+    let reader = std::io::BufReader::new(file);
+    let metadata: OutputMetadata = serde_json::from_reader(reader).expect("unable to read json");
+
+    assert_eq!(metadata.title, "temp")
+}
