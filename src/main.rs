@@ -8,6 +8,7 @@ enum Flags {
     _Metadata,
     PreviewImage,
     Thumbnails,
+    Help,
 }
 
 // impl fmt::Display for Flags {
@@ -36,6 +37,7 @@ impl Flags {
             Flags::_Metadata => "metadata",
             Flags::PreviewImage => "preview_image",
             Flags::Thumbnails => "thumbs",
+            Flags::Help => "help",
         }
     }
 }
@@ -85,8 +87,8 @@ fn main() {
         )
         .get_matches();
 
-    let input = matches.value_of("input").unwrap_or("help");
-    if input == "help" {
+    let input = matches.value_of("input").unwrap_or(Flags::Help.as_str());
+    if input == Flags::Help.as_str() {
         println!("Usage: <TODO>");
         process::exit(1);
     }
