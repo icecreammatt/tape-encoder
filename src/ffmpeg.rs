@@ -68,8 +68,8 @@ pub fn create_thumbnails(input: &str, output: &str) {
 pub fn create_hls_encoding(input: &str, output: &str) {
     println!("\npub create_hls_encoding");
 
-    if fs::metadata(&output).is_err() {
-        fs::create_dir_all(&output).unwrap();
+    if fs::metadata(output).is_err() {
+        fs::create_dir_all(output).unwrap();
     }
 
     // TODO: Sub add paths
