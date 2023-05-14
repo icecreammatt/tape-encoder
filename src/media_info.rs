@@ -64,13 +64,12 @@ pub fn get_media_info(input: &str) -> OutputMetadata {
             metadata.duration_human = duration.duration_human();
             metadata.frame_rate = track.frame_rate.parse().unwrap();
 
-            match track.width {
-                Some(width) => metadata.width = width.parse().unwrap(),
-                None => {}
+            if let Some(width) = track.width {
+                metadata.width = width.parse().unwrap()
             }
-            match track.height {
-                Some(height) => metadata.height = height.parse().unwrap(),
-                None => {}
+
+            if let Some(height) = track.height {
+                metadata.height = height.parse().unwrap()
             }
         }
     }

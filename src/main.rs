@@ -4,7 +4,7 @@ use std::process;
 
 enum Flags {
     _Gif,
-    HLS,
+    Hls,
     _Metadata,
     PreviewImage,
     Thumbnails,
@@ -32,7 +32,7 @@ impl Flags {
     fn as_str(&self) -> &'static str {
         match self {
             Flags::_Gif => "gif",
-            Flags::HLS => "HLS",
+            Flags::Hls => "HLS",
             Flags::_Metadata => "metadata",
             Flags::PreviewImage => "preview_image",
             Flags::Thumbnails => "thumbs",
@@ -77,9 +77,9 @@ fn main() {
                 .takes_value(false),
         )
         .arg(
-            Arg::with_name(Flags::HLS.as_str())
+            Arg::with_name(Flags::Hls.as_str())
                 .short('h')
-                .long(Flags::HLS.as_str())
+                .long(Flags::Hls.as_str())
                 .help("Generate hls chunks")
                 .takes_value(false),
         )
@@ -107,7 +107,7 @@ fn main() {
         create_preview_image(out.file_name.clone(), path.clone());
     }
 
-    let gen_hls = matches.is_present(Flags::HLS.as_str());
+    let gen_hls = matches.is_present(Flags::Hls.as_str());
     if gen_hls {
         create_hls_encoding(out.file_name, path);
     }

@@ -3,7 +3,7 @@ use std::fs;
 use std::fs::File;
 use std::io::Write;
 
-pub fn file_to_hyphen(name: &String) -> String {
+pub fn file_to_hyphen(name: &str) -> String {
     name.replace(['_', ' ', '.'], "-")
 }
 
@@ -22,6 +22,6 @@ pub fn write_metadata(data: &OutputMetadata) {
 
 #[test]
 fn file_to_hyphen_test() {
-    let result = file_to_hyphen(&"2022.04.06.name with space.mp4".to_string());
+    let result = file_to_hyphen("2022.04.06.name with space.mp4");
     assert_eq!(result, "2022-04-06-name-with-space-mp4");
 }
