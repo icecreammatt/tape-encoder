@@ -1,6 +1,50 @@
 use clap::{App, Arg};
 use std::process;
 
+enum Flags {
+    _Gif,
+    HLS,
+    _Metadata,
+    _PreviewImage,
+    Thumbnails,
+}
+
+// impl fmt::Display for Flags {
+//     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+//         match self {
+//             Flags::_Gif => write!(f, "gif"),
+//             Flags::HLS => write!(f, "HLS"),
+//             Flags::_Metadata => write!(f, "metadata"),
+//             Flags::_PreviewImage => write!(f, "preview_image"),
+//             Flags::Thumbnails => write!(f, "thumbs"),
+//         }
+//     }
+// }
+
+impl ToString for Flags {
+    fn to_string(&self) -> String {
+        self.as_str().to_string()
+    }
+}
+
+impl Flags {
+    fn as_str(&self) -> &'static str {
+        match self {
+            Flags::_Gif => "gif",
+            Flags::HLS => "HLS",
+            Flags::_Metadata => "metadata",
+            Flags::_PreviewImage => "preview_image",
+            Flags::Thumbnails => "thumbs",
+        }
+    }
+}
+
+use crate::{
+    ffmpeg::{create_hls_encoding, create_thumbnails},
+    fileio::file_to_hyphen,
+};
+
+mod ffmpeg;
 mod fileio;
 mod media_info;
 mod metadata;
@@ -15,23 +59,45 @@ fn main() {
                 .short('i')
                 .long("input")
                 .value_name("FILE")
-                .help("Sets the input file to use")
-                .takes_value(true),
+                .help("Sets the input file to use"),
+        )
+        .arg(
+            Arg::with_name(Flags::Thumbnails.as_str())
+                .short('t')
+                .long(Flags::Thumbnails.as_str())
+                .help("Generate thumbnails")
+                .takes_value(false),
+        )
+        .arg(
+            Arg::with_name(Flags::HLS.as_str())
+                .short('h')
+                .long(Flags::HLS.as_str())
+                .help("Generate hls chunks")
+                .takes_value(false),
         )
         .get_matches();
 
     let input = matches.value_of("input").unwrap_or("help");
-    // println!("Input file: {}", input);
-
     if input == "help" {
         println!("Usage: <TODO>");
-
         process::exit(1);
     }
 
     let out = media_info::get_media_info(&input);
-    println!("{:#?}", out);
-    fileio::write_metadata(out);
+    println!("{:#?}", &out);
+    fileio::write_metadata(&out);
+
+    let path = format!("./{}", file_to_hyphen(&out.title));
+
+    let gen_thumbs = matches.is_present(Flags::Thumbnails.as_str());
+    if gen_thumbs {
+        create_thumbnails(out.file_name.clone(), path.clone());
+    }
+
+    let gen_hls = matches.is_present(Flags::HLS.as_str());
+    if gen_hls {
+        create_hls_encoding(out.file_name.clone(), path.clone());
+    }
 
     /*
     TODO:
@@ -42,11 +108,11 @@ fn main() {
     [x] Store Metadata in JSON
 
     [ ] FFMPEG to generate media
-        [ ] thumbnails
+        [x] thumbnails
         [ ] gif
         [ ] preview image
-        [ ] HLS
-        [ ] DASH
+        [x] HLS
+        [x] DASH
         [ ] Metadata
     [ ] Upload metadata to database
 

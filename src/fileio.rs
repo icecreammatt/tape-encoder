@@ -3,11 +3,11 @@ use std::fs;
 use std::fs::File;
 use std::io::Write;
 
-fn file_to_hyphen(name: &String) -> String {
+pub fn file_to_hyphen(name: &String) -> String {
     return String::from(name.replace("_", "-").replace(" ", "-").replace(".", "-"));
 }
 
-pub fn write_metadata(data: OutputMetadata) {
+pub fn write_metadata(data: &OutputMetadata) {
     let directory = file_to_hyphen(&data.title);
 
     if !fs::metadata(&directory).is_ok() {
