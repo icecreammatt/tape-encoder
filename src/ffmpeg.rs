@@ -22,7 +22,7 @@ fn run_command(command: &str) {
 
 // fn create_preview_gif() {}
 
-pub fn create_preview_image(input: String, output: String) {
+pub fn create_preview_image(input: &str, output: &str) {
     let path = format!("{}/lg", output);
     if fs::metadata(&path).is_err() {
         fs::create_dir_all(&path).unwrap();
@@ -36,7 +36,7 @@ pub fn create_preview_image(input: String, output: String) {
     run_command(&command);
 }
 
-pub fn create_thumbnails(input: String, output: String) {
+pub fn create_thumbnails(input: &str, output: &str) {
     println!("\ncreate_thumbnails");
 
     let thumbs_path = format!("{}/thumbs", output);

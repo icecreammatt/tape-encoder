@@ -101,12 +101,12 @@ fn main() {
 
     let gen_thumbs = matches.is_present(Flags::Thumbnails.as_str());
     if gen_thumbs {
-        create_thumbnails(out.file_name.clone(), path.clone());
+        create_thumbnails(&out.file_name, &path);
     }
 
     let gen_preview_image = matches.is_present(Flags::PreviewImage.as_str());
     if gen_preview_image {
-        create_preview_image(out.file_name.clone(), path.clone());
+        create_preview_image(&out.file_name, &path);
     }
 
     let gen_hls = matches.is_present(Flags::Hls.as_str());
