@@ -33,7 +33,7 @@ fn write_metadata_test() {
         ..Default::default()
     };
 
-    let _result = write_metadata(&output_metadata);
+    write_metadata(&output_metadata);
 
     let file = File::open("temp/temp.json").expect("error opening file");
     let reader = std::io::BufReader::new(file);
