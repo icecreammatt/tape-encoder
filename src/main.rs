@@ -91,7 +91,7 @@ fn main() {
         process::exit(1);
     }
 
-    let out = media_info::get_media_info(&input);
+    let out = media_info::get_media_info(input);
     println!("{:#?}", &out);
     fileio::write_metadata(&out);
 
@@ -109,7 +109,7 @@ fn main() {
 
     let gen_hls = matches.is_present(Flags::HLS.as_str());
     if gen_hls {
-        create_hls_encoding(out.file_name.clone(), path.clone());
+        create_hls_encoding(out.file_name, path);
     }
 
     /*

@@ -24,7 +24,7 @@ fn run_command(command: &str) {
 
 pub fn create_preview_image(input: String, output: String) {
     let path = format!("{}/lg", output);
-    if !fs::metadata(&path).is_ok() {
+    if fs::metadata(&path).is_err() {
         fs::create_dir_all(&path).unwrap();
     }
 
@@ -42,7 +42,7 @@ pub fn create_thumbnails(input: String, output: String) {
     let thumbs_path = format!("{}/thumbs", output);
 
     println!("Path: {}", thumbs_path);
-    if !fs::metadata(&thumbs_path).is_ok() {
+    if fs::metadata(&thumbs_path).is_err() {
         fs::create_dir_all(&thumbs_path).unwrap();
     }
 
@@ -57,7 +57,7 @@ pub fn create_thumbnails(input: String, output: String) {
 pub fn create_hls_encoding(input: String, output: String) {
     println!("\npub create_hls_encoding");
 
-    if !fs::metadata(&output).is_ok() {
+    if fs::metadata(&output).is_err() {
         fs::create_dir_all(&output).unwrap();
     }
 

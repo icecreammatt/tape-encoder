@@ -4,13 +4,13 @@ use std::fs::File;
 use std::io::Write;
 
 pub fn file_to_hyphen(name: &String) -> String {
-    return String::from(name.replace("_", "-").replace(" ", "-").replace(".", "-"));
+    name.replace(['_', ' ', '.'], "-")
 }
 
 pub fn write_metadata(data: &OutputMetadata) {
     let directory = file_to_hyphen(&data.title);
 
-    if !fs::metadata(&directory).is_ok() {
+    if fs::metadata(&directory).is_err() {
         fs::create_dir(&directory).unwrap();
     }
 

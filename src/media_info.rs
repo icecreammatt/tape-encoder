@@ -16,7 +16,7 @@ fn get_file_parts(file: &str) -> (&str, &str, &str) {
 }
 
 pub fn get_media_info(input: &str) -> OutputMetadata {
-    if !fs::metadata(&input).is_ok() {
+    if fs::metadata(input).is_err() {
         println!("{} is not found.", &input);
         std::process::exit(1);
     }
@@ -25,7 +25,7 @@ pub fn get_media_info(input: &str) -> OutputMetadata {
 
     let media_info = Command::new("mediainfo")
         .arg("--output=JSON")
-        .arg(format!("{}", input))
+        .arg(input)
         .output()
         .expect("mediainfo error parsing file, make sure mediainfo is installed");
 
@@ -75,7 +75,7 @@ pub fn get_media_info(input: &str) -> OutputMetadata {
         }
     }
 
-    return metadata;
+    metadata
 }
 
 #[test]
