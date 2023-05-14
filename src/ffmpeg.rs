@@ -20,9 +20,21 @@ fn run_command(command: &str) {
     println!("{}", result);
 }
 
-// fn create_preview_image() {}
-
 // fn create_preview_gif() {}
+
+pub fn create_preview_image(input: String, output: String) {
+    let path = format!("{}/lg", output);
+    if !fs::metadata(&path).is_ok() {
+        fs::create_dir_all(&path).unwrap();
+    }
+
+    let command = format!(
+        "ffmpeg -i {} -vf scale=iw*sar:ih,setsar=1 -ss 00:00:05 -t 1 -vframes 1 {}/{}.jpg",
+        input, path, output
+    );
+
+    run_command(&command);
+}
 
 pub fn create_thumbnails(input: String, output: String) {
     println!("\ncreate_thumbnails");

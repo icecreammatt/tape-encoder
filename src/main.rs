@@ -1,3 +1,4 @@
+use crate::ffmpeg::create_preview_image;
 use clap::{App, Arg};
 use std::process;
 
@@ -5,7 +6,7 @@ enum Flags {
     _Gif,
     HLS,
     _Metadata,
-    _PreviewImage,
+    PreviewImage,
     Thumbnails,
 }
 
@@ -33,7 +34,7 @@ impl Flags {
             Flags::_Gif => "gif",
             Flags::HLS => "HLS",
             Flags::_Metadata => "metadata",
-            Flags::_PreviewImage => "preview_image",
+            Flags::PreviewImage => "preview_image",
             Flags::Thumbnails => "thumbs",
         }
     }
@@ -69,6 +70,13 @@ fn main() {
                 .takes_value(false),
         )
         .arg(
+            Arg::with_name(Flags::PreviewImage.as_str())
+                .short('p')
+                .long(Flags::PreviewImage.as_str())
+                .help("Generate preview")
+                .takes_value(false),
+        )
+        .arg(
             Arg::with_name(Flags::HLS.as_str())
                 .short('h')
                 .long(Flags::HLS.as_str())
@@ -94,6 +102,11 @@ fn main() {
         create_thumbnails(out.file_name.clone(), path.clone());
     }
 
+    let gen_preview_image = matches.is_present(Flags::PreviewImage.as_str());
+    if gen_preview_image {
+        create_preview_image(out.file_name.clone(), path.clone());
+    }
+
     let gen_hls = matches.is_present(Flags::HLS.as_str());
     if gen_hls {
         create_hls_encoding(out.file_name.clone(), path.clone());
@@ -110,7 +123,7 @@ fn main() {
     [ ] FFMPEG to generate media
         [x] thumbnails
         [ ] gif
-        [ ] preview image
+        [x] preview image
         [x] HLS
         [x] DASH
         [ ] Metadata
