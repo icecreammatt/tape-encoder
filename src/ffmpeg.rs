@@ -54,7 +54,7 @@ pub fn create_thumbnails(input: &str, output: &str) {
     run_command(&command);
 }
 
-pub fn create_hls_encoding(input: String, output: String) {
+pub fn create_hls_encoding(input: &str, output: &str) {
     println!("\npub create_hls_encoding");
 
     if fs::metadata(&output).is_err() {

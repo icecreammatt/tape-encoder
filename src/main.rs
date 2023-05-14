@@ -111,7 +111,7 @@ fn main() {
 
     let gen_hls = matches.is_present(Flags::Hls.as_str());
     if gen_hls {
-        create_hls_encoding(out.file_name, path);
+        create_hls_encoding(&out.file_name, &path);
     }
 
     /*
