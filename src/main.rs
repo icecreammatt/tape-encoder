@@ -134,15 +134,16 @@ fn main() {
     [x] Make directory for metadata
     [x] Store Metadata in JSON
 
-    [ ] FFMPEG to generate media
+    [x] FFMPEG to generate media
         [x] thumbnails
-        [ ] gif
+        xx] gif
         [x] preview image
         [x] HLS
         [x] DASH
-        [ ] Metadata
+        xx] Metadata
+    [ ] Move hard coded path out of functions and into main
+    [ ] Refactor to get rid of unwraps and panics
     [ ] Upload metadata to database
-
     [ ] Create queue watcher to start running jobs (watches queueu every 5 seconds)
         - On new item run generator process
     */
