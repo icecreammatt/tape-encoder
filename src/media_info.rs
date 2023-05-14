@@ -44,13 +44,8 @@ pub fn get_media_info(input: &str) -> OutputMetadata {
         date: date.to_string(),
         title: extracted_filename.to_string(),
         file_name: media.name,
-        frame_count: 0,
-        frame_rate: 0.0,
-        duration_seconds: 0.0,
-        duration_human: "".to_string(),
         extension: extension.to_string(),
-        width: 0,
-        height: 0,
+        ..Default::default()
     };
 
     for track in media.track {

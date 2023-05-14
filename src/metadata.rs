@@ -24,7 +24,7 @@ impl DurationSeconds {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct OutputMetadata {
     pub title: String,
     pub file_name: String,
