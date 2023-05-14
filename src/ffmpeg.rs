@@ -20,7 +20,18 @@ fn run_command(command: &str) {
     println!("{}", result);
 }
 
-// fn create_preview_gif() {}
+pub fn create_preview_gif(input: &str, output: &str) {
+    let path = format!("{}/gif", output);
+    if fs::metadata(&path).is_err() {
+        fs::create_dir_all(&path).unwrap();
+    }
+
+    let command = format!(
+    "ffmpeg -ss 30 -t 3 -i {} -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 {}/{}.gif", input, path, output
+    );
+
+    run_command(&command);
+}
 
 pub fn create_preview_image(input: &str, output: &str) {
     let path = format!("{}/lg", output);

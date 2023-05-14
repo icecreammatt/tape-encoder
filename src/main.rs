@@ -1,9 +1,9 @@
-use crate::ffmpeg::create_preview_image;
+use crate::ffmpeg::{create_preview_gif, create_preview_image};
 use clap::{App, Arg};
 use std::process;
 
 enum Flags {
-    _Gif,
+    Gif,
     Hls,
     _Metadata,
     PreviewImage,
@@ -32,7 +32,7 @@ impl ToString for Flags {
 impl Flags {
     fn as_str(&self) -> &'static str {
         match self {
-            Flags::_Gif => "gif",
+            Flags::Gif => "gif",
             Flags::Hls => "HLS",
             Flags::_Metadata => "metadata",
             Flags::PreviewImage => "preview_image",
@@ -85,6 +85,13 @@ fn main() {
                 .help("Generate hls chunks")
                 .takes_value(false),
         )
+        .arg(
+            Arg::with_name(Flags::Gif.as_str())
+                .short('g')
+                .long(Flags::Gif.as_str())
+                .help("Generate gif")
+                .takes_value(false),
+        )
         .get_matches();
 
     let input = matches.value_of("input").unwrap_or(Flags::Help.as_str());
@@ -112,6 +119,11 @@ fn main() {
     let gen_hls = matches.is_present(Flags::Hls.as_str());
     if gen_hls {
         create_hls_encoding(&out.file_name, &path);
+    }
+
+    let gen_gif = matches.is_present(Flags::Gif.as_str());
+    if gen_gif {
+        create_preview_gif(&out.file_name, &path);
     }
 
     /*
