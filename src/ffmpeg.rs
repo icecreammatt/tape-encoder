@@ -20,8 +20,8 @@ fn run_command(command: &str) {
     println!("{}", result);
 }
 
-pub fn create_preview_gif(input: &str, output: &str) {
-    let path = format!("{}/gif", output);
+pub fn create_preview_gif(input: &str, subpath: &str, output: &str) {
+    let path = format!("{}/{}", output, subpath);
     if fs::metadata(&path).is_err() {
         fs::create_dir_all(&path).unwrap();
     }
@@ -33,8 +33,8 @@ pub fn create_preview_gif(input: &str, output: &str) {
     run_command(&command);
 }
 
-pub fn create_preview_image(input: &str, output: &str) {
-    let path = format!("{}/lg", output);
+pub fn create_preview_image(input: &str, subpath: &str, output: &str) {
+    let path = format!("{}/{}", output, subpath);
     if fs::metadata(&path).is_err() {
         fs::create_dir_all(&path).unwrap();
     }
@@ -47,10 +47,10 @@ pub fn create_preview_image(input: &str, output: &str) {
     run_command(&command);
 }
 
-pub fn create_thumbnails(input: &str, output: &str) {
+pub fn create_thumbnails(input: &str, subpath: &str, output: &str) {
     println!("\ncreate_thumbnails");
 
-    let thumbs_path = format!("{}/thumbs", output);
+    let thumbs_path = format!("{}/{}", output, subpath);
 
     println!("Path: {}", thumbs_path);
     if fs::metadata(&thumbs_path).is_err() {
@@ -65,11 +65,13 @@ pub fn create_thumbnails(input: &str, output: &str) {
     run_command(&command);
 }
 
-pub fn create_hls_encoding(input: &str, output: &str) {
+pub fn create_hls_encoding(input: &str, subpath: &str, output: &str) {
     println!("\npub create_hls_encoding");
 
-    if fs::metadata(output).is_err() {
-        fs::create_dir_all(output).unwrap();
+    let hls_path = format!("{}/{}", output, subpath);
+
+    if fs::metadata(&hls_path).is_err() {
+        fs::create_dir_all(&hls_path).unwrap();
     }
 
     // TODO: Sub add paths
@@ -91,7 +93,7 @@ pub fn create_hls_encoding(input: &str, output: &str) {
         -window_size 0 -adaptation_sets \"id=0,streams=v id=1,streams=a\" -hls_playlist 1 -seg_duration 4 \
         -streaming 0 -f dash \
         -hls_segment_filename \
-         -hls_playlist_type {}/vod \
-         {}/720p_%03d.m3u8 {}/720p.m3u8", input, output, output, output);
+        -hls_playlist_type {}/vod \
+        {}/720p_%03d.m3u8 {}/720p.m3u8", input, hls_path, hls_path, hls_path);
     run_command(&command);
 }

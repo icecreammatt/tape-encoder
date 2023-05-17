@@ -108,22 +108,22 @@ fn main() {
 
     let gen_thumbs = matches.is_present(Flags::Thumbnails.as_str());
     if gen_thumbs {
-        create_thumbnails(&out.file_name, &path);
+        create_thumbnails(&out.file_name, "thumbs", &path);
     }
 
     let gen_preview_image = matches.is_present(Flags::PreviewImage.as_str());
     if gen_preview_image {
-        create_preview_image(&out.file_name, &path);
+        create_preview_image(&out.file_name, "lg", &path);
     }
 
     let gen_hls = matches.is_present(Flags::Hls.as_str());
     if gen_hls {
-        create_hls_encoding(&out.file_name, &path);
+        create_hls_encoding(&out.file_name, "hls", &path);
     }
 
     let gen_gif = matches.is_present(Flags::Gif.as_str());
     if gen_gif {
-        create_preview_gif(&out.file_name, &path);
+        create_preview_gif(&out.file_name, "gif", &path);
     }
 
     /*
@@ -141,7 +141,7 @@ fn main() {
         [x] HLS
         [x] DASH
         xx] Metadata
-    [ ] Move hard coded path out of functions and into main
+    [x] Move hard coded path out of functions and into main
     [ ] Refactor to get rid of unwraps and panics
     [ ] Upload metadata to database
     [ ] Create queue watcher to start running jobs (watches queueu every 5 seconds)
