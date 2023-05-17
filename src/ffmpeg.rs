@@ -1,4 +1,4 @@
-use std::{fs, process::Command};
+use std::{fs, io, process::Command};
 
 fn run_command(command: &str) {
     let cmd = Command::new("sh")
@@ -20,7 +20,7 @@ fn run_command(command: &str) {
     println!("{}", result);
 }
 
-pub fn create_preview_gif(input: &str, subpath: &str, output: &str) {
+pub fn create_preview_gif(input: &str, subpath: &str, output: &str) -> io::Result<()> {
     let path = format!("{}/{}", output, subpath);
     if fs::metadata(&path).is_err() {
         fs::create_dir_all(&path).unwrap();
@@ -31,9 +31,10 @@ pub fn create_preview_gif(input: &str, subpath: &str, output: &str) {
     );
 
     run_command(&command);
+    Ok(())
 }
 
-pub fn create_preview_image(input: &str, subpath: &str, output: &str) {
+pub fn create_preview_image(input: &str, subpath: &str, output: &str) -> io::Result<()> {
     let path = format!("{}/{}", output, subpath);
     if fs::metadata(&path).is_err() {
         fs::create_dir_all(&path).unwrap();
@@ -45,9 +46,10 @@ pub fn create_preview_image(input: &str, subpath: &str, output: &str) {
     );
 
     run_command(&command);
+    Ok(())
 }
 
-pub fn create_thumbnails(input: &str, subpath: &str, output: &str) {
+pub fn create_thumbnails(input: &str, subpath: &str, output: &str) -> io::Result<()> {
     println!("\ncreate_thumbnails");
 
     let thumbs_path = format!("{}/{}", output, subpath);
@@ -63,9 +65,10 @@ pub fn create_thumbnails(input: &str, subpath: &str, output: &str) {
     );
 
     run_command(&command);
+    Ok(())
 }
 
-pub fn create_hls_encoding(input: &str, subpath: &str, output: &str) {
+pub fn create_hls_encoding(input: &str, subpath: &str, output: &str) -> io::Result<()> {
     println!("\npub create_hls_encoding");
 
     let hls_path = format!("{}/{}", output, subpath);
@@ -96,4 +99,5 @@ pub fn create_hls_encoding(input: &str, subpath: &str, output: &str) {
         -hls_playlist_type {}/vod \
         {}/720p_%03d.m3u8 {}/720p.m3u8", input, hls_path, hls_path, hls_path);
     run_command(&command);
+    Ok(())
 }

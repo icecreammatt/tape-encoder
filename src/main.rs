@@ -1,6 +1,6 @@
 use crate::ffmpeg::{create_preview_gif, create_preview_image};
 use clap::{App, Arg};
-use std::process;
+use std::{io, process};
 
 enum Flags {
     Gif,
@@ -52,7 +52,7 @@ mod fileio;
 mod media_info;
 mod metadata;
 
-fn main() {
+fn main() -> io::Result<()> {
     let matches = App::new("tape-encoder")
         .version("1.0")
         .author("Matt Carrier")
@@ -108,22 +108,22 @@ fn main() {
 
     let gen_thumbs = matches.is_present(Flags::Thumbnails.as_str());
     if gen_thumbs {
-        create_thumbnails(&out.file_name, "thumbs", &path);
+        create_thumbnails(&out.file_name, "thumbs", &path)?;
     }
 
     let gen_preview_image = matches.is_present(Flags::PreviewImage.as_str());
     if gen_preview_image {
-        create_preview_image(&out.file_name, "lg", &path);
+        create_preview_image(&out.file_name, "lg", &path)?;
     }
 
     let gen_hls = matches.is_present(Flags::Hls.as_str());
     if gen_hls {
-        create_hls_encoding(&out.file_name, "hls", &path);
+        create_hls_encoding(&out.file_name, "hls", &path)?;
     }
 
     let gen_gif = matches.is_present(Flags::Gif.as_str());
     if gen_gif {
-        create_preview_gif(&out.file_name, "gif", &path);
+        create_preview_gif(&out.file_name, "gif", &path)?;
     }
 
     /*
@@ -147,4 +147,5 @@ fn main() {
     [ ] Create queue watcher to start running jobs (watches queueu every 5 seconds)
         - On new item run generator process
     */
+    Ok(())
 }
