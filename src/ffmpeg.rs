@@ -1,11 +1,7 @@
 use std::{fs, io, process::Command};
 
-fn run_command(command: &str) {
-    let cmd = Command::new("sh")
-        .arg("-c")
-        .arg(command)
-        .output()
-        .expect("Error");
+fn run_command(command: &str) -> io::Result<()> {
+    let cmd = Command::new("sh").arg("-c").arg(command).output()?;
 
     println!("status: {}", cmd.status);
 
@@ -18,26 +14,27 @@ fn run_command(command: &str) {
     let result = result.as_str();
 
     println!("{}", result);
+    Ok(())
 }
 
 pub fn create_preview_gif(input: &str, subpath: &str, output: &str) -> io::Result<()> {
     let path = format!("{}/{}", output, subpath);
     if fs::metadata(&path).is_err() {
-        fs::create_dir_all(&path).unwrap();
+        fs::create_dir_all(&path)?;
     }
 
     let command = format!(
     "ffmpeg -ss 30 -t 3 -i {} -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 {}/{}.gif", input, path, output
     );
 
-    run_command(&command);
+    run_command(&command)?;
     Ok(())
 }
 
 pub fn create_preview_image(input: &str, subpath: &str, output: &str) -> io::Result<()> {
     let path = format!("{}/{}", output, subpath);
     if fs::metadata(&path).is_err() {
-        fs::create_dir_all(&path).unwrap();
+        fs::create_dir_all(&path)?;
     }
 
     let command = format!(
@@ -45,7 +42,7 @@ pub fn create_preview_image(input: &str, subpath: &str, output: &str) -> io::Res
         input, path, output
     );
 
-    run_command(&command);
+    run_command(&command)?;
     Ok(())
 }
 
@@ -56,7 +53,7 @@ pub fn create_thumbnails(input: &str, subpath: &str, output: &str) -> io::Result
 
     println!("Path: {}", thumbs_path);
     if fs::metadata(&thumbs_path).is_err() {
-        fs::create_dir_all(&thumbs_path).unwrap();
+        fs::create_dir_all(&thumbs_path)?;
     }
 
     let command = format!(
@@ -64,7 +61,7 @@ pub fn create_thumbnails(input: &str, subpath: &str, output: &str) -> io::Result
         input, thumbs_path
     );
 
-    run_command(&command);
+    run_command(&command)?;
     Ok(())
 }
 
@@ -74,7 +71,7 @@ pub fn create_hls_encoding(input: &str, subpath: &str, output: &str) -> io::Resu
     let hls_path = format!("{}/{}", output, subpath);
 
     if fs::metadata(&hls_path).is_err() {
-        fs::create_dir_all(&hls_path).unwrap();
+        fs::create_dir_all(&hls_path)?;
     }
 
     // TODO: Sub add paths
@@ -82,7 +79,7 @@ pub fn create_hls_encoding(input: &str, subpath: &str, output: &str) -> io::Resu
     // for path in paths {
     //     let p = format!("{}/{}", path, output);
     //     if !fs::metadata(&p).is_ok() {
-    //         fs::create_dir_all(&p).unwrap();
+    //         fs::create_dir_all(&p)?;
     //     }
     // }
 
@@ -98,6 +95,6 @@ pub fn create_hls_encoding(input: &str, subpath: &str, output: &str) -> io::Resu
         -hls_segment_filename \
         -hls_playlist_type {}/vod \
         {}/720p_%03d.m3u8 {}/720p.m3u8", input, hls_path, hls_path, hls_path);
-    run_command(&command);
+    run_command(&command)?;
     Ok(())
 }

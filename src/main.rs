@@ -102,7 +102,7 @@ fn main() -> io::Result<()> {
 
     let out = media_info::get_media_info(input);
     println!("{:#?}", &out);
-    fileio::write_metadata(&out);
+    fileio::write_metadata(&out)?;
 
     let path = format!("./{}", file_to_hyphen(&out.title));
 
