@@ -79,7 +79,7 @@ fn main() -> io::Result<()> {
 
     let gen_hls = matches.is_present(Flags::Hls.as_str());
     if gen_hls {
-        create_hls_encoding(&out.file_name, "hls", &path)?;
+        create_hls_encoding(&out.file_name, "vid", &path)?;
     }
 
     let gen_gif = matches.is_present(Flags::Gif.as_str());
