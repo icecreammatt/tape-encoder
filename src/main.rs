@@ -1,54 +1,15 @@
-use crate::ffmpeg::{create_preview_gif, create_preview_image};
+use crate::{
+    ffmpeg::{create_hls_encoding, create_preview_gif, create_preview_image, create_thumbnails},
+    fileio::file_to_hyphen,
+    flags::Flags,
+};
+
 use clap::{App, Arg};
 use std::{io, process};
 
-enum Flags {
-    Gif,
-    Hls,
-    _Metadata,
-    PreviewImage,
-    Thumbnails,
-    Help,
-}
-
-// impl fmt::Display for Flags {
-//     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-//         match self {
-//             Flags::_Gif => write!(f, "gif"),
-//             Flags::HLS => write!(f, "HLS"),
-//             Flags::_Metadata => write!(f, "metadata"),
-//             Flags::_PreviewImage => write!(f, "preview_image"),
-//             Flags::Thumbnails => write!(f, "thumbs"),
-//         }
-//     }
-// }
-
-impl ToString for Flags {
-    fn to_string(&self) -> String {
-        self.as_str().to_string()
-    }
-}
-
-impl Flags {
-    fn as_str(&self) -> &'static str {
-        match self {
-            Flags::Gif => "gif",
-            Flags::Hls => "HLS",
-            Flags::_Metadata => "metadata",
-            Flags::PreviewImage => "preview_image",
-            Flags::Thumbnails => "thumbs",
-            Flags::Help => "help",
-        }
-    }
-}
-
-use crate::{
-    ffmpeg::{create_hls_encoding, create_thumbnails},
-    fileio::file_to_hyphen,
-};
-
 mod ffmpeg;
 mod fileio;
+mod flags;
 mod media_info;
 mod metadata;
 
