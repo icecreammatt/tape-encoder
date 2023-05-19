@@ -49,23 +49,26 @@ pub fn get_media_info(input: &str) -> OutputMetadata {
     };
 
     for track in media.track {
-        // println!("{:#?}", track);
-        if track.data_type == "Video" {
-            metadata.frame_count = track.frame_count.parse().unwrap();
-            let duration = DurationSeconds {
-                duration_seconds: track.duration.parse().unwrap(),
-            };
-            metadata.duration_seconds = duration.duration_seconds;
-            metadata.duration_human = duration.duration_human();
-            metadata.frame_rate = track.frame_rate.parse().unwrap();
+        match track.data_type {
+            TrackType::Video => {
+                metadata.frame_count = track.frame_count.parse().unwrap();
+                let duration = DurationSeconds {
+                    duration_seconds: track.duration.parse().unwrap(),
+                };
+                metadata.duration_seconds = duration.duration_seconds;
+                metadata.duration_human = duration.duration_human();
+                metadata.frame_rate = track.frame_rate.parse().unwrap();
 
-            if let Some(width) = track.width {
-                metadata.width = width.parse().unwrap()
-            }
+                if let Some(width) = track.width {
+                    metadata.width = width.parse().unwrap()
+                }
 
-            if let Some(height) = track.height {
-                metadata.height = height.parse().unwrap()
+                if let Some(height) = track.height {
+                    metadata.height = height.parse().unwrap()
+                }
             }
+            TrackType::Audio => (),
+            TrackType::General => (),
         }
     }
 

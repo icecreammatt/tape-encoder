@@ -46,9 +46,16 @@ pub struct CreatingLibrary {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub enum TrackType {
+    Audio,
+    General,
+    Video,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct TrackGeneral {
     #[serde(rename = "@type")]
-    pub data_type: String,
+    pub data_type: TrackType,
     #[serde(rename = "FrameCount")]
     pub frame_count: String,
     #[serde(rename = "FrameRate")]
