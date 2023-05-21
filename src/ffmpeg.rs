@@ -68,20 +68,17 @@ pub fn create_thumbnails(input: &str, subpath: &str, output: &str) -> io::Result
 pub fn create_hls_encoding(input: &str, subpath: &str, output: &str) -> io::Result<()> {
     println!("\npub create_hls_encoding");
 
-    let hls_path = format!("{}/{}", output, subpath);
+    let hls_path = format!("{}/{}/hls", output, subpath);
 
     if fs::metadata(&hls_path).is_err() {
         fs::create_dir_all(&hls_path)?;
     }
 
-    // TODO: Sub add paths
-    // let paths = ["hls", "dash"];
-    // for path in paths {
-    //     let p = format!("{}/{}", path, output);
-    //     if !fs::metadata(&p).is_ok() {
-    //         fs::create_dir_all(&p)?;
-    //     }
-    // }
+    let dash_path = format!("{}/{}/dash", output, subpath);
+
+    if fs::metadata(&dash_path).is_err() {
+        fs::create_dir_all(&dash_path)?;
+    }
 
     let command = format!("ffmpeg -stream_loop 0  -i {} \
         -map 0 -map 0 -map 0 -c:a aac -c:v h264_videotoolbox -allow_sw 1 \
@@ -92,9 +89,9 @@ pub fn create_hls_encoding(input: &str, subpath: &str, output: &str) -> io::Resu
         -keyint_min 120 -g 120 -sc_threshold 0 -b_strategy 0 -ar:a:1 22050 -use_timeline 1 -use_template 1 \
         -window_size 0 -adaptation_sets \"id=0,streams=v id=1,streams=a\" -hls_playlist 1 -seg_duration 4 \
         -streaming 0 -f dash \
-        -hls_segment_filename \
         -hls_playlist_type {}/vod \
-        {}/720p_%03d.m3u8 {}/720p.m3u8", input, hls_path, hls_path, hls_path);
+        {}/720p_%03d.m3u8 {}/720p_%03d.m3u8", input, hls_path, hls_path, dash_path);
     run_command(&command)?;
     Ok(())
 }
+// -hls_segment_filename \
