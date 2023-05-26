@@ -1,4 +1,5 @@
 use crate::{
+    config::load_config,
     ffmpeg::{create_hls_encoding, create_preview_gif, create_preview_image, create_thumbnails},
     fileio::file_to_hyphen,
     flags::Flags,
@@ -7,6 +8,7 @@ use crate::{
 use clap::{App, Arg};
 use std::{io, process};
 
+mod config;
 mod ffmpeg;
 mod fileio;
 mod flags;
@@ -60,6 +62,9 @@ fn main() -> io::Result<()> {
         println!("Usage: <TODO>");
         process::exit(1);
     }
+
+    let config = load_config();
+    println!("{:#?}", config);
 
     let out = media_info::get_media_info(input);
     println!("{:#?}", &out);
