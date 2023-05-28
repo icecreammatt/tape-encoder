@@ -1,51 +1,59 @@
 use serde::{Deserialize, Serialize};
-use std::{
-    fs::{self, File},
-    io::{self},
-};
-
-const DIRECTORY: &str = "~/.config/tape-encoder/";
-// const CONFIG_PATH: &str = format!("{}{}", DIRECTORY, "config.yaml").as_str();
+use std::fs::{self, File};
+use std::path::Path;
+use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
     ffmpeg_command: String,
 }
 
-// pub fn generate_config() -> io::Result<(&Config)> {
-pub fn generate_config() -> Config {
-    // fs::create_dir(&DIRECTORY)?;
-
+pub fn generate_config(path: PathBuf) -> Config {
     let config = Config {
         ffmpeg_command: String::from("test commnad with --flags testing"),
     };
 
-    /*
-    let yaml = serde_yaml::to_string(&config);
-    let mut file = File::create(CONFIG_PATH)?;
-    if Some(file) {}
-    let result = file.write_all(yaml.as_bytes())?;
-    Ok((result))
-    */
+    let file = File::create(path).expect("Error creating config file for writing");
+    let _result = serde_yaml::to_writer(file, &config);
     config
 }
 
-pub fn check_for_config(path: &str) -> bool {
-    if fs::metadata(&path).is_err() {
+pub fn is_directory_created(path: &PathBuf) -> bool {
+    if fs::metadata(path).is_err() {
         return false;
     }
-    return true;
+    true
+}
+
+fn get_config_path_from_home_dir(path: &str) -> PathBuf {
+    let mut directory = PathBuf::new();
+    directory.push(dirs::home_dir().unwrap());
+    directory.push(path);
+    directory
+}
+
+fn get_config_path(directory: &PathBuf, file: &str) -> PathBuf {
+    let mut path = PathBuf::new();
+    path.push(directory);
+    path.push(file);
+    path
 }
 
 pub fn load_config() -> Config {
-    // if !check_for_config(CONFIG_PATH) {
-    // generate_config()
-    // } else {
-    generate_config()
-    // }
+    let directory = get_config_path_from_home_dir(".config/tape-encoder/");
+    let config_file = get_config_path(&directory, "config.yaml");
 
-    // let file = File::open(CONFIG_PATH)?;
-    // let config: Config = serde_yaml::from_reader(file)?;
-
-    // config
+    if !is_directory_created(&directory) {
+        if !Path::new(&directory).is_dir() {
+            match fs::create_dir(directory) {
+                Ok(()) => println!("Config does not exist initilizing with default config"),
+                Err(e) => println!("Problem creating config path: {}", e),
+            }
+        }
+        generate_config(config_file)
+    } else {
+        let file = File::open(config_file).expect("unable to open file");
+        let config: Config = serde_yaml::from_reader(file).expect("unable to extract");
+        config
+    }
 }
