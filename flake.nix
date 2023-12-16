@@ -6,7 +6,8 @@
   };
 
   outputs = { self, nixpkgs, utils, naersk }:
-    utils.lib.eachDefaultSystem (system:
+    # utils.lib.eachDefaultSystem (system:
+    utils.lib.eachSystem ["x86_64-linux"] (system:
       let
         pkgs = import nixpkgs { inherit system; };
         naersk-lib = pkgs.callPackage naersk { };
